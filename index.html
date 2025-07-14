@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doğum Günün Kutlu Olsun!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color-start: #fce4ec;
+            --bg-color-end: #e0f7fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom right, var(--bg-color-start), var(--bg-color-end));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            transition: background-color 2s ease-in-out; /* Smooth background transition */
+        }
+
+        .background-donkey {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.7;
+            animation: moveDonkey linear infinite;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        @keyframes moveDonkey {
+            0% { transform: translateX(-100vw); }
+            100% { transform: translateX(200vw); }
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInScale 1s ease-out forwards, float 3s ease-in-out infinite alternate; /* Float animation added */
+        }
+
+        /* Envelope flap styling */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; /* Adjust height for flap size */
+            background: inherit; /* Inherit background to blend */
+            border-radius: 20px 20px 0 0;
+            z-index: -1;
+            transform-origin: top;
+            transform: translateY(-50%) rotateX(0deg); /* Initial position, hidden above */
+            transition: transform 0.5s ease-out;
+            box-shadow: inherit; /* Inherit shadow for continuity */
+        }
+
+        /* Animation for envelope opening (optional, could be triggered by JS) */
+        .container.open-envelope::before {
+            transform: translateY(-50%) rotateX(180deg); /* Flap opens */
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .message {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #d81b60;
+            margin-bottom: 1.5rem;
+            animation: textPop 1.5s ease-out forwards;
+            line-height: 1.3;
+        }
+
+        @keyframes textPop {
+            0% { transform: translateY(20px); opacity: 0; }
+            50% { transform: translateY(-10px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .gift-donkey {
+            font-size: 8rem;
+            animation: bounceIn 1s ease-out forwards;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+
+        .action-button {
+            background-color: #ff8a65;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 138, 101, 0.4);
+        }
+
+        .action-button:hover {
+            background-color: #ffab91;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 138, 101, 0.6);
+        }
+
+        .action-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 10px rgba(255, 138, 101, 0.3);
+        }
+
+        /* Confetti styles */
+        #confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--confetti-color);
+            border-radius: 50%;
+            opacity: 0;
+            animation: confetti-fall linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .message {
+                font-size: 1.5rem;
+            }
+            .gift-donkey {
+                font-size: 6rem;
+            }
+            .background-donkey {
+                font-size: 3rem;
+            }
+            .container {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .message {
+                font-size: 1.2rem;
+            }
+            .gift-donkey {
+                font-size: 5rem;
+            }
+            .background-donkey {
+                font-size: 2.5rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .action-button {
+                font-size: 1rem;
+                padding: 0.7rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="confetti-container"></div>
+    <div id="donkey-container"></div>
+
+    <div class="container" id="messageContainer">
+        <p class="message" id="birthdayMessage">Doğum günün kutlu olsun en sevdiğim süleymancı gardaşım!</p>
+        <span class="gift-donkey" role="img" aria-label="Donkey">🎁🫏</span>
+        <button id="playButton" class="action-button">Kutlamayı Başlat!</button>
+    </div>
+
+    <script>
+        function createBackgroundDonkey() {
+            const donkey = document.createElement('span');
+            donkey.className = 'background-donkey';
+            donkey.textContent = '🫏';
+            document.getElementById('donkey-container').appendChild(donkey);
+
+            const startTop = Math.random() * (window.innerHeight - 100);
+            donkey.style.top = `${startTop}px`;
+
+            const duration = 10 + Math.random() * 10;
+            const delay = Math.random() * 5;
+            donkey.style.animationDuration = `${duration}s`;
+            donkey.style.animationDelay = `${delay}s`;
+
+            const scale = 0.5 + Math.random() * 0.5;
+            donkey.style.transform = `scale(${scale})`;
+            donkey.style.zIndex = Math.floor(Math.random() * 5);
+
+            donkey.addEventListener('animationend', () => {
+                donkey.remove();
+                createBackgroundDonkey();
+            });
+        }
+
+        function generateConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+
+            for (let i = 0; i < 100; i++) { // Generate 100 confetti pieces
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDuration = `${3 + Math.random() * 2}s`; // 3-5 seconds
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`; // Small delay variation
+                confetti.style.setProperty('--confetti-color', colors[Math.floor(Math.random() * colors.length)]);
+                confettiContainer.appendChild(confetti);
+
+                // Remove confetti after animation to clean up DOM
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+
+        function getRandomPastelColor() {
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = 70 + Math.random() * 20; // 70-90% saturation
+            const lightness = 70 + Math.random() * 20; // 70-90% lightness
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        function changeBackgroundColor() {
+            const newColor1 = getRandomPastelColor();
+            const newColor2 = getRandomPastelColor();
+            document.documentElement.style.setProperty('--bg-color-start', newColor1);
+            document.documentElement.style.setProperty('--bg-color-end', newColor2);
+        }
+
+
+        window.onload = function() {
+            for (let i = 0; i < 20; i++) {
+                createBackgroundDonkey();
+            }
+
+            // Initial background color change
+            changeBackgroundColor();
+            // Change background every 5 seconds
+            setInterval(changeBackgroundColor, 5000);
+
+            const playButton = document.getElementById('playButton');
+            let isPlaying = false;
+            let synth;
+
+            playButton.addEventListener('click', async () => {
+                if (isPlaying) return;
+
+                isPlaying = true;
+                playButton.textContent = 'Kutlama Başladı!';
+                playButton.disabled = true;
+
+                // Trigger confetti
+                generateConfetti();
+
+                await Tone.start();
+                console.log('Audio context started');
+
+                synth = new Tone.Synth().toDestination();
+                const now = Tone.now();
+
+                const melody = [
+                    { note: "C4", duration: "8n", time: now },
+                    { note: "C4", duration: "8n", time: now + 0.5 },
+                    { note: "D4", duration: "4n", time: now + 1 },
+                    { note: "C4", duration: "4n", time: now + 1.5 },
+                    { note: "F4", duration: "4n", time: now + 2 },
+                    { note: "E4", duration: "2n", time: now + 2.5 },
+
+                    { note: "C4", duration: "8n", time: now + 3.5 },
+                    { note: "C4", duration: "8n", time: now + 4 },
+                    { note: "D4", duration: "4n", time: now + 4.5 },
+                    { note: "C4", duration: "4n", time: now + 5 },
+                    { note: "G4", duration: "4n", time: now + 5.5 },
+                    { note: "F4", duration: "2n", time: now + 6 },
+
+                    { note: "C4", duration: "8n", time: now + 7 },
+                    { note: "C4", duration: "8n", time: now + 7.5 },
+                    { note: "C5", duration: "4n", time: now + 8 },
+                    { note: "A4", duration: "4n", time: now + 8.5 },
+                    { note: "F4", duration: "4n", time: now + 9 },
+                    { note: "E4", duration: "8n", time: now + 9.5 },
+                    { note: "D4", duration: "2n", time: now + 10 },
+
+                    { note: "Bb4", duration: "8n", time: now + 11 },
+                    { note: "Bb4", duration: "8n", time: now + 11.5 },
+                    { note: "A4", duration: "4n", time: now + 12 },
+                    { note: "F4", duration: "4n", time: now + 12.5 },
+                    { note: "G4", duration: "4n", time: now + 13 },
+                    { note: "F4", duration: "2n", time: now + 13.5 }
+                ];
+
+                melody.forEach(note => {
+                    synth.triggerAttackRelease(note.note, note.duration, note.time);
+                });
+
+                Tone.Transport.scheduleOnce(() => {
+                    synth.dispose();
+                    isPlaying = false;
+                    playButton.textContent = 'Tekrar Kutla!';
+                    playButton.disabled = false;
+                }, now + 14);
+            });
+        };
+    </script>
+</body>
+</html>
